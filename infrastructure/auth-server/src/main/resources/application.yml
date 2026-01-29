@@ -1,0 +1,31 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: auth-server
+  datasource:
+    url: ${AUTH_DB_URL:jdbc:postgresql://auth-db:5432/auth_db}
+    username: ${AUTH_DB_USER:auth_user}
+    password: ${AUTH_DB_PASSWORD:auth_password}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG

@@ -1,0 +1,19 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: inventario-service
+  datasource:
+    url: ${INVENTARIO_DB_URL:jdbc:postgresql://services-db:5432/inventario_db}
+    username: ${INVENTARIO_DB_USER:services_user}
+    password: ${INVENTARIO_DB_PASSWORD:services_password}
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

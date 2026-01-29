@@ -1,0 +1,19 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: catalogo-service
+  datasource:
+    url: ${CATALOGO_DB_URL:jdbc:postgresql://services-db:5432/catalogo_db}
+    username: ${CATALOGO_DB_USER:services_user}
+    password: ${CATALOGO_DB_PASSWORD:services_password}
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

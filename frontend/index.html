@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Microservices System Demo</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1>FarmaApp System</h1>
+      </div>
+      <nav class="sidebar-nav">
+        <p class="nav-label">Ventas y análisis</p>
+        <button class="nav-item">Gestión de ventas</button>
+        <button class="nav-item">Reporte de ingresos</button>
+        <div class="nav-divider"></div>
+        <p class="nav-label">Módulos de catálogo</p>
+        <button class="nav-item is-active">Medicamentos</button>
+        <button class="nav-item">Clientes</button>
+        <button class="nav-item">Prescripciones</button>
+        <div class="nav-divider"></div>
+        <p class="nav-label">Inventario</p>
+        <button class="nav-item">Alertas de stock</button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="nav-item logout">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="page-header">
+        <div>
+          <p class="eyebrow">Panel de control</p>
+          <h2>Microservices System</h2>
+          <p class="page-subtitle">Demo simple para catálogo, inventario y ventas.</p>
+        </div>
+        <div class="session-status">
+          <span class="status-pill">Roles activos: <strong id="role-info">Sin sesión activa</strong></span>
+        </div>
+      </header>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <h3>Acceso</h3>
+            <p>Inicia sesión para obtener el token automáticamente.</p>
+          </div>
+          <button id="login" class="primary">Obtener token</button>
+        </div>
+        <div class="form-grid">
+          <div>
+            <label for="username">Usuario</label>
+            <input id="username" type="text" placeholder="admin o user">
+          </div>
+          <div>
+            <label for="password">Contraseña</label>
+            <input id="password" type="password" placeholder="••••••">
+          </div>
+          <div class="span-2">
+            <label for="token">Token JWT</label>
+            <textarea id="token" rows="2" readonly placeholder="El token aparecerá aquí"></textarea>
+          </div>
+        </div>
+        <div class="button-row">
+          <button id="copy-token" class="ghost">Copiar token</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <h3>Catálogo</h3>
+            <p>Gestiona productos y su información básica.</p>
+          </div>
+          <div class="panel-actions">
+            <button data-action="catalogo" class="ghost">Actualizar listado</button>
+            <button id="crear-producto" data-admin-only class="primary">Crear producto</button>
+          </div>
+        </div>
+        <div class="form-grid">
+          <input id="producto-id" type="number" placeholder="ID producto (para editar/eliminar)">
+          <input id="producto-nombre" type="text" placeholder="Nombre">
+          <input id="producto-descripcion" type="text" placeholder="Descripción">
+          <input id="producto-precio" type="number" step="0.01" placeholder="Precio">
+        </div>
+        <div class="button-row">
+          <button id="actualizar-producto" data-admin-only class="ghost">Actualizar producto</button>
+          <button id="eliminar-producto" data-admin-only class="danger">Eliminar producto</button>
+        </div>
+        <div class="table-card">
+          <div class="table-header">
+            <h4>Listado de productos</h4>
+            <span id="catalogo-status" class="table-status">Sin datos cargados</span>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="catalogo-table-body"></tbody>
+          </table>
+          <p id="catalogo-empty" class="table-empty">No hay productos para mostrar.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <h3>Inventario</h3>
+            <p>Consulta existencias y ajusta el stock.</p>
+          </div>
+          <div class="panel-actions">
+            <button data-action="inventario" class="ghost">Actualizar inventario</button>
+            <button id="crear-inventario" data-admin-only class="primary">Crear inventario</button>
+          </div>
+        </div>
+        <div class="form-grid">
+          <input id="inventario-producto-id" type="number" placeholder="ID producto">
+          <input id="inventario-stock" type="number" placeholder="Stock">
+        </div>
+        <div class="button-row">
+          <button id="actualizar-inventario" data-admin-only class="ghost">Actualizar inventario</button>
+          <button id="eliminar-inventario" data-admin-only class="danger">Eliminar inventario</button>
+        </div>
+        <div class="table-card">
+          <div class="table-header">
+            <h4>Stock disponible</h4>
+            <span id="inventario-status" class="table-status">Sin datos cargados</span>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID producto</th>
+                <th>Stock</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="inventario-table-body"></tbody>
+          </table>
+          <p id="inventario-empty" class="table-empty">No hay inventario para mostrar.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <h3>Ventas</h3>
+            <p>Consulta y registra ventas recientes.</p>
+          </div>
+          <div class="panel-actions">
+            <button data-action="ventas" class="ghost">Actualizar ventas</button>
+            <button id="crear-venta" data-admin-only class="primary">Registrar venta</button>
+          </div>
+        </div>
+        <div class="form-grid">
+          <input id="venta-id" type="number" placeholder="ID venta (para editar/eliminar)">
+          <input id="venta-cliente" type="text" placeholder="Cliente">
+          <input id="venta-producto-id" type="number" placeholder="ID producto">
+          <input id="venta-cantidad" type="number" placeholder="Cantidad">
+          <input id="venta-precio" type="number" step="0.01" placeholder="Precio unitario">
+        </div>
+        <div class="button-row">
+          <button id="actualizar-venta" data-admin-only class="ghost">Actualizar venta</button>
+          <button id="eliminar-venta" data-admin-only class="danger">Eliminar venta</button>
+        </div>
+        <div class="table-card">
+          <div class="table-header">
+            <h4>Últimas ventas</h4>
+            <span id="ventas-status" class="table-status">Sin datos cargados</span>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="ventas-table-body"></tbody>
+          </table>
+          <p id="ventas-empty" class="table-empty">No hay ventas registradas.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

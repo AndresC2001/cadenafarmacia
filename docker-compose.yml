@@ -1,0 +1,95 @@
+version: "3.9"
+
+services:
+  services-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: services_user
+      POSTGRES_PASSWORD: services_password
+    volumes:
+      - services-db-data:/var/lib/postgresql/data
+      - ./infrastructure/db/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5433:5432"
+
+  auth-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: auth_user
+      POSTGRES_PASSWORD: auth_password
+    volumes:
+      - auth-db-data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+
+  auth-server:
+    build: ./infrastructure/auth-server
+    depends_on:
+      - auth-db
+    environment:
+      AUTH_DB_URL: jdbc:postgresql://auth-db:5432/auth_db
+      AUTH_DB_USER: auth_user
+      AUTH_DB_PASSWORD: auth_password
+    ports:
+      - "9000:9000"
+
+  catalogo-service:
+    build: ./services/catalogo-service
+    depends_on:
+      - services-db
+    environment:
+      CATALOGO_DB_URL: jdbc:postgresql://services-db:5432/catalogo_db
+      CATALOGO_DB_USER: services_user
+      CATALOGO_DB_PASSWORD: services_password
+    ports:
+      - "8081:8081"
+
+  inventario-service:
+    build: ./services/inventario-service
+    depends_on:
+      - services-db
+      - catalogo-service
+    environment:
+      INVENTARIO_DB_URL: jdbc:postgresql://services-db:5432/inventario_db
+      INVENTARIO_DB_USER: services_user
+      INVENTARIO_DB_PASSWORD: services_password
+      CATALOGO_URL: http://catalogo-service:8081
+    ports:
+      - "8082:8082"
+
+  ventas-service:
+    build: ./services/ventas-service
+    depends_on:
+      - services-db
+      - catalogo-service
+      - inventario-service
+    environment:
+      VENTAS_DB_URL: jdbc:postgresql://services-db:5432/ventas_db
+      VENTAS_DB_USER: services_user
+      VENTAS_DB_PASSWORD: services_password
+      CATALOGO_URL: http://catalogo-service:8081
+      INVENTARIO_URL: http://inventario-service:8082
+    ports:
+      - "8083:8083"
+
+  api-gateway:
+    build: ./infrastructure/api-gateway
+    depends_on:
+      - auth-server
+      - catalogo-service
+      - inventario-service
+      - ventas-service
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - api-gateway
+    ports:
+      - "3000:80"
+
+volumes:
+  services-db-data:
+  auth-db-data:
