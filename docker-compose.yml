@@ -86,7 +86,7 @@ services:
     depends_on:
       - api-gateway
     environment:
-      AUTH_SERVER_URL: http://localhost:9000
+      AUTH_SERVER_URL: http://136.109.71.196:9000
     ports:
       - "3001:81"
 
@@ -95,7 +95,7 @@ services:
     depends_on:
       - api-gateway
     environment:
-      AUTH_SERVER_URL: http://localhost:9000
+      AUTH_SERVER_URL: http://136.109.71.196:9000
     ports:
       - "3000:80"
 
