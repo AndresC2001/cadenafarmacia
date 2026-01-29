@@ -1,0 +1,3 @@
+window.CONFIG = {
+  AUTH_SERVER_URL: '${AUTH_SERVER_URL}'
+};
