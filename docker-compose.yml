@@ -7,8 +7,9 @@ services:
     volumes:
       - services-db-data:/var/lib/postgresql/data
       - ./infrastructure/db/init:/docker-entrypoint-initdb.d
-    ports:
-      - "5433:5432"
+    # Remover ports para mayor seguridad - solo acceso interno
+    # ports:
+    #   - "5433:5432"
 
   auth-db:
     image: postgres:15
@@ -18,8 +19,9 @@ services:
       POSTGRES_PASSWORD: auth_password
     volumes:
       - auth-db-data:/var/lib/postgresql/data
-    ports:
-      - "5434:5432"
+    # Remover ports para mayor seguridad - solo acceso interno
+    # ports:
+    #   - "5434:5432"
 
   auth-server:
     build: ./infrastructure/auth-server
@@ -29,6 +31,8 @@ services:
       AUTH_DB_URL: jdbc:postgresql://auth-db:5432/auth_db
       AUTH_DB_USER: auth_user
       AUTH_DB_PASSWORD: auth_password
+      # Configurar el issuer con la IP pública
+      SERVER_ISSUER: http://136.109.71.196:9000
     ports:
       - "9000:9000"
 
@@ -78,6 +82,9 @@ services:
       - catalogo-service
       - inventario-service
       - ventas-service
+    environment:
+      # Configurar el JWT issuer con la IP pública
+      JWT_ISSUER_URI: http://136.109.71.196:9000
     ports:
       - "8080:8080"
 
@@ -86,6 +93,7 @@ services:
     depends_on:
       - api-gateway
     environment:
+      # Usar la IP pública para el auth server
       AUTH_SERVER_URL: http://136.109.71.196:9000
     ports:
       - "3001:81"
@@ -95,6 +103,7 @@ services:
     depends_on:
       - api-gateway
     environment:
+      # Usar la IP pública para el auth server
       AUTH_SERVER_URL: http://136.109.71.196:9000
     ports:
       - "3000:80"
