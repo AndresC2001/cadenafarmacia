@@ -13,12 +13,16 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api")
+@CrossOrigin(origins = {"http://136.109.71.196:3000", "http://136.109.71.196:3001", "http://localhost:3000", "http://localhost:3001"})
 public class TokenController {
 
     private final AuthenticationManager authenticationManager;
@@ -96,7 +100,7 @@ public class TokenController {
                 """;
     }
 
-    @PostMapping("/api/token")
+    @PostMapping("/token")
     public ResponseEntity<TokenResponse> token(@RequestBody TokenRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.username(), request.password()));
