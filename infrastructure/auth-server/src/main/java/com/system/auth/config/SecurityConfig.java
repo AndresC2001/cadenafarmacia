@@ -47,10 +47,14 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        
+        // Leer la IP pública desde variable de entorno
+        String publicIp = System.getenv().getOrDefault("PUBLIC_IP", "localhost");
+        
         // Permitir acceso desde la IP pública y localhost
         configuration.setAllowedOrigins(List.of(
-            "http://136.109.71.196:3000", 
-            "http://136.109.71.196:3001",
+            "http://" + publicIp + ":3000", 
+            "http://" + publicIp + ":3001",
             "http://localhost:3000", 
             "http://localhost:3001"
         ));

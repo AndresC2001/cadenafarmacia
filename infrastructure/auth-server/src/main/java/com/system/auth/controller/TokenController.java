@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = {"http://136.109.71.196:3000", "http://136.109.71.196:3001", "http://localhost:3000", "http://localhost:3001"})
+@CrossOrigin(origins = {"http://${PUBLIC_IP:localhost}:3000", "http://${PUBLIC_IP:localhost}:3001", "http://localhost:3000", "http://localhost:3001"})
 public class TokenController {
 
     private final AuthenticationManager authenticationManager;

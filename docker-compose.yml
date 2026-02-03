@@ -32,7 +32,8 @@ services:
       AUTH_DB_USER: auth_user
       AUTH_DB_PASSWORD: auth_password
       # Configurar el issuer con la IP pública
-      SERVER_ISSUER: http://136.109.71.196:9000
+      SERVER_ISSUER: http://${PUBLIC_IP:-136.109.71.196}:9000
+      PUBLIC_IP: ${PUBLIC_IP:-136.109.71.196}
     ports:
       - "9000:9000"
 
@@ -84,7 +85,8 @@ services:
       - ventas-service
     environment:
       # Configurar el JWT issuer con la IP pública
-      JWT_ISSUER_URI: http://136.109.71.196:9000
+      JWT_ISSUER_URI: http://${PUBLIC_IP:-136.109.71.196}:9000
+      PUBLIC_IP: ${PUBLIC_IP:-136.109.71.196}
     ports:
       - "8080:8080"
 
@@ -94,7 +96,7 @@ services:
       - api-gateway
     environment:
       # Usar la IP pública para el auth server
-      AUTH_SERVER_URL: http://136.109.71.196:9000
+      AUTH_SERVER_URL: http://${PUBLIC_IP:-136.109.71.196}:9000
     ports:
       - "3001:81"
 
@@ -104,7 +106,7 @@ services:
       - api-gateway
     environment:
       # Usar la IP pública para el auth server
-      AUTH_SERVER_URL: http://136.109.71.196:9000
+      AUTH_SERVER_URL: http://${PUBLIC_IP:-136.109.71.196}:9000
     ports:
       - "3000:80"
 
