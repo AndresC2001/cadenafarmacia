@@ -19,6 +19,12 @@ spring:
     init:
       mode: always
 
+# OAuth2 Configuration
+app:
+  oauth2:
+    redirect-uri: ${OAUTH2_REDIRECT_URI:http://api-gateway:8080/login/oauth2/code/gateway-client}
+    issuer: ${OAUTH2_ISSUER:http://auth-server:9000}
+
 management:
   endpoints:
     web:

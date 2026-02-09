@@ -10,19 +10,19 @@ spring:
         - AddRequestHeader=X-Request-Source, api-gateway
       routes:
         - id: catalogo-service
-          uri: http://catalogo-service:8081
+          uri: ${CATALOGO_SERVICE_URI:http://catalogo-service:8081}
           predicates:
             - Path=/api/catalogo/**
           filters:
             - StripPrefix=2
         - id: inventario-service
-          uri: http://inventario-service:8082
+          uri: ${INVENTARIO_SERVICE_URI:http://inventario-service:8082}
           predicates:
             - Path=/api/inventario/**
           filters:
             - StripPrefix=2
         - id: ventas-service
-          uri: http://ventas-service:8083
+          uri: ${VENTAS_SERVICE_URI:http://ventas-service:8083}
           predicates:
             - Path=/api/ventas/**
           filters:
@@ -32,7 +32,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://auth-server:9000/oauth2/jwks
+          jwk-set-uri: ${JWK_SET_URI:http://auth-server:9000/oauth2/jwks}
 
 management:
   endpoints:

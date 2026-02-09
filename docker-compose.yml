@@ -31,9 +31,11 @@ services:
       AUTH_DB_URL: jdbc:postgresql://auth-db:5432/auth_db
       AUTH_DB_USER: auth_user
       AUTH_DB_PASSWORD: auth_password
-      # Configurar el issuer con la IP pública
-      SERVER_ISSUER: http://${PUBLIC_IP:-136.109.71.196}:9000
-      PUBLIC_IP: ${PUBLIC_IP:-136.109.71.196}
+      # OAuth2 Configuration
+      OAUTH2_ISSUER: ${OAUTH2_ISSUER:-http://auth-server:9000}
+      OAUTH2_REDIRECT_URI: ${OAUTH2_REDIRECT_URI:-http://api-gateway:8080/login/oauth2/code/gateway-client}
+      # CORS - orígenes permitidos separados por coma
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://frontend:80,http://frontend-react:80,http://localhost:3000,http://localhost:3001}
     ports:
       - "9000:9000"
 
@@ -84,9 +86,12 @@ services:
       - inventario-service
       - ventas-service
     environment:
-      # Configurar el JWT issuer con la IP pública
-      JWT_ISSUER_URI: http://${PUBLIC_IP:-136.109.71.196}:9000
-      PUBLIC_IP: ${PUBLIC_IP:-136.109.71.196}
+      # JWT validation
+      JWK_SET_URI: ${JWK_SET_URI:-http://auth-server:9000/oauth2/jwks}
+      # Service URIs (for Azure, these would be internal ACA URLs)
+      CATALOGO_SERVICE_URI: ${CATALOGO_SERVICE_URI:-http://catalogo-service:8081}
+      INVENTARIO_SERVICE_URI: ${INVENTARIO_SERVICE_URI:-http://inventario-service:8082}
+      VENTAS_SERVICE_URI: ${VENTAS_SERVICE_URI:-http://ventas-service:8083}
     ports:
       - "8080:8080"
 
@@ -95,8 +100,7 @@ services:
     depends_on:
       - api-gateway
     environment:
-      # Usar la IP pública para el auth server
-      AUTH_SERVER_URL: http://${PUBLIC_IP:-136.109.71.196}:9000
+      AUTH_SERVER_URL: ${AUTH_SERVER_URL:-http://localhost:9000}
     ports:
       - "3001:81"
 
@@ -105,8 +109,8 @@ services:
     depends_on:
       - api-gateway
     environment:
-      # Usar la IP pública para el auth server
-      AUTH_SERVER_URL: http://${PUBLIC_IP:-136.109.71.196}:9000
+      AUTH_SERVER_URL: ${AUTH_SERVER_URL:-http://localhost:9000}
+      API_GATEWAY_URL: ${API_GATEWAY_URL:-/api}
     ports:
       - "3000:80"
 

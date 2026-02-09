@@ -35,4 +35,5 @@ export interface User {
 
 export interface AppConfig {
   AUTH_SERVER_URL: string;
+  API_GATEWAY_URL: string;
 }

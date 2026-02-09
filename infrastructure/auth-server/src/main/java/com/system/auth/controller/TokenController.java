@@ -13,7 +13,6 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = {"http://${PUBLIC_IP:localhost}:3000", "http://${PUBLIC_IP:localhost}:3001", "http://localhost:3000", "http://localhost:3001"})
+// CORS configurado globalmente en SecurityConfig
 public class TokenController {
 
     private final AuthenticationManager authenticationManager;

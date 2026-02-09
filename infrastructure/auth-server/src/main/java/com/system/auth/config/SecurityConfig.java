@@ -1,5 +1,6 @@
 package com.system.auth.config;
 
+import java.util.Arrays;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,16 +49,14 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Leer la IP pública desde variable de entorno
-        String publicIp = System.getenv().getOrDefault("PUBLIC_IP", "localhost");
+        // Leer orígenes permitidos desde variable de entorno (separados por coma)
+        // Por defecto permite frontend en Docker local
+        String allowedOriginsEnv = System.getenv().getOrDefault("ALLOWED_ORIGINS", 
+            "http://frontend:80,http://frontend-react:80,http://localhost:3000,http://localhost:3001");
         
-        // Permitir acceso desde la IP pública y localhost
-        configuration.setAllowedOrigins(List.of(
-            "http://" + publicIp + ":3000", 
-            "http://" + publicIp + ":3001",
-            "http://localhost:3000", 
-            "http://localhost:3001"
-        ));
+        List<String> allowedOrigins = Arrays.asList(allowedOriginsEnv.split(","));
+        
+        configuration.setAllowedOrigins(allowedOrigins);
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

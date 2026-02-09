@@ -10,6 +10,7 @@ import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,12 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 @Configuration
 public class AuthorizationServerConfig {
 
+    @Value("${app.oauth2.redirect-uri:http://api-gateway:8080/login/oauth2/code/gateway-client}")
+    private String redirectUri;
+
+    @Value("${app.oauth2.issuer:http://auth-server:9000}")
+    private String issuerUrl;
+
     @Bean
     @Order(1)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -43,6 +50,7 @@ public class AuthorizationServerConfig {
                         .requestMatchers(HttpMethod.GET, "/oauth2/token").permitAll()
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
+                .cors(Customizer.withDefaults())
                 .with(authorizationServerConfigurer, Customizer.withDefaults());
         return http.build();
     }
@@ -56,7 +64,7 @@ public class AuthorizationServerConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri("http://localhost:8080/login/oauth2/code/gateway-client")
+                .redirectUri(redirectUri)
                 .scope("read")
                 .scope("write")
                 .build();
@@ -78,7 +86,7 @@ public class AuthorizationServerConfig {
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder()
-                .issuer("http://auth-server:9000")
+                .issuer(issuerUrl)
                 .build();
     }
 

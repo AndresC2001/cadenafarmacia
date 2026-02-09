@@ -3,12 +3,13 @@ import type { AxiosResponse } from 'axios';
 import type { AuthResponse, Producto, Inventario, Venta, AppConfig } from '../types';
 
 class ApiService {
-  private baseUrl = '/api';
+  private baseUrl: string;
   private authServerUrl: string;
 
   constructor() {
     const config = (window as any).CONFIG as AppConfig;
     this.authServerUrl = config?.AUTH_SERVER_URL || 'http://localhost:9000';
+    this.baseUrl = config?.API_GATEWAY_URL || '/api';
     
     // Configurar axios interceptor para agregar token automáticamente
     axios.interceptors.request.use((config) => {
